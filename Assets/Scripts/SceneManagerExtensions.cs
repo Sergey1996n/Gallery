@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public static class SceneManagerExtensions 
 {
-    private static Dictionary<string, string> parameters;
+    private static Dictionary<string, Texture2D> parameters;
     private static Stack<string> sceneStack = new Stack<string>();
 
     public static void LoadSceneWithHistory(string sceneName)
@@ -16,7 +15,7 @@ public static class SceneManagerExtensions
         SceneManager.LoadScene("Loading");
     }
 
-    public static void LoadSceneWithHistory(string sceneName, Dictionary<string, string> parameters = null)
+    public static void LoadSceneWithHistory(string sceneName, Dictionary<string, Texture2D> parameters = null)
     {
         SceneManagerExtensions.parameters = parameters;
         SceneLoadingManager.NameScene = sceneName;
@@ -30,21 +29,20 @@ public static class SceneManagerExtensions
         {
             return;
         }
-
-        string sceneName = sceneStack.Peek();
+        string sceneName = sceneStack.Pop();
         SceneManager.LoadScene(sceneName);
     }
 
-    public static Dictionary<string, string> GetSceneParameters()
+    public static Dictionary<string, Texture2D> GetSceneParameters()
     {
         return parameters;
     }
 
-    public static string GetParam(string paramKey)
+    public static Texture2D GetParam(string paramKey)
     {
         if (parameters == null || !parameters.ContainsKey(paramKey))
         {
-            return "";
+            return null;
         }
         return parameters[paramKey];
     }
@@ -58,11 +56,11 @@ public static class SceneManagerExtensions
         return parameters.ContainsKey(paramKey);
     }
 
-    public static void SetParam(string paramKey, string paramValue)
+    public static void SetParam(string paramKey, Texture2D paramValue)
     {
         if (parameters == null)
         {
-            parameters = new Dictionary<string, string>();
+            parameters = new Dictionary<string, Texture2D>();
         }
         parameters.Add(paramKey, paramValue);
     }
